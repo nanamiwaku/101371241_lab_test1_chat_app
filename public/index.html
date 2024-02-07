@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat App</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5">
+    <a href="/signup.html">Sign Up</a>
+
+    <h1 class="text-center">Welcome to the Chat App!</h1>
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-4">
+            <h2 class="mb-3">Login</h2>
+            <form id="login-form">
+                <div class="mb-3">
+                    <label for="username" class="form-label">Username:</label>
+                    <input type="text" id="username" name="username" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password:</label>
+                    <input type="password" id="password" name="password" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="chatrooms-section" style="display:none;">
+        <h2>Available Chatrooms</h2>
+        <ul id="chatroom-list"></ul>
+    </div>
+
+    <div id="chat-interface" style="display:none;">
+        <h2>Chatroom: <span id="current-chatroom"></span></h2>
+        <div id="chat-messages">
+            <!-- チャットメッセージがここに表示されます -->
+        </div>
+        <input type="text" id="chat-input" placeholder="Type a message...">
+        <button id="send-message">Send</button>
+    </div>
+    <button id="logout" style="display:none;">Logout</button>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
+<script>
+    // サーバーサイドからチャットルームのリストを取得して表示する関数
+    function fetchChatrooms() {
+        // サーバーのエンドポイントにリクエストを送信してチャットルームのリストを取得する
+        $.ajax({
+            type: 'GET',
+            url: '/api/chatrooms', // エンドポイントのURLを適切に設定する
+            success: function(response) {
+                // 取得したチャットルームのリストを表示する
+                displayChatrooms(response);
+            },
+            error: function(xhr) {
+                console.error('Failed to fetch chatrooms:', xhr.responseText);
+            }
+        });
+    }
+
+    // チャットルームのリストを表示する関数
+    function displayChatrooms(chatrooms) {
+        var chatroomList = $('#chatroom-list');
+        chatroomList.empty(); // リストをクリアしてから新しい要素を追加する
+
+        // 取得したチャットルームのリストをHTML要素に変換してリストに追加する
+        chatrooms.forEach(function(chatroom) {
+            var listItem = $('<li>').text(chatroom.name);
+            // チャットルームをクリックしたときのイベントを追加
+            listItem.click(function() {
+                // 選択されたチャットルームに参加する処理を実行
+                joinChatroom(chatroom.id);
+            });
+            chatroomList.append(listItem);
+        });
+
+        // チャットルームのリストを表示する
+        $('#chatrooms-section').show();
+    }
+
+    // 選択されたチャットルームに参加する関数
+    function joinChatroom(chatroomId) {
+        // 選択されたチャットルームに参加する処理を実装する
+        console.log('Joined chatroom:', chatroomId);
+        // 参加後の処理を実行
+        showChatInterface();
+    }
+
+    // チャットインターフェイスを表示する関数
+    function showChatInterface() {
+        $('#chat-interface').show();
+    }
+
+    // チャットメッセージの送信処理
+    $('#send-message').click(function() {
+        var message = $('#chat-input').val();
+        // メッセージを送信する処理を実装する
+        console.log('Sending message:', message);
+    });
+
+    // ページ読み込み時にチャットルームのリストを取得して表示する
+    $(document).ready(function() {
+        fetchChatrooms();
+    });
+
+    // ログアウト処理
+    $('#logout').click(function() {
+        // ログアウト処理を実装する
+        console.log('Logging out...');
+        // ログアウト後の処理を実行
+        location.reload(); // ページをリロードしてログインフォームを表示
+    });
+
+    // 「ユーザーが入力している...」機能を実装
+    $('#chat-input').on('input', function() {
+        var typedMessage = $(this).val();
+        // ユーザーが入力している内容を表示
+        console.log('User typing:', typedMessage);
+    });
+</script>
+</body>
+</html>
