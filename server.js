@@ -34,6 +34,9 @@ app.get('/signup.html', (req, res) => {
 });
 
 
+app.get('/chatrooms.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'chatrooms.html'));
+});
 
 io.on('connection', (socket) => {
   console.log('A user connected');
