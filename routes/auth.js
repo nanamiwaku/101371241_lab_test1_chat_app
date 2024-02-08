@@ -1,6 +1,10 @@
 
 const express = require('express');
 const router = express.Router();
+const bcrypt = require('bcrypt');
+
+
+
 const User = require('../models/User'); 
 router.post('/signup', async (req, res) => {
     try {
@@ -11,7 +15,10 @@ router.post('/signup', async (req, res) => {
             return res.status(400).json({ message: 'Username already exists' });
         }
 
-        const newUser = new User({ username, firstname, lastname, password });
+        const hashedPassword = await bcrypt.hash(password, 12);
+        
+        const newUser = new User({ username, firstname, lastname, password: hashedPassword });
+        
         await newUser.save();
 
         res.status(200).json({ message: 'Signup successful' });
@@ -20,6 +27,7 @@ router.post('/signup', async (req, res) => {
         res.status(500).json({ error: error.message || 'An error occurred while signing up' });
     }
 });
+
 
 
 router.post('/login', async (req, res) => {
@@ -46,17 +54,16 @@ router.post('/login', async (req, res) => {
 
 
 router.post('/logout', (req, res) => {
-    // セッションを破棄する
+    
     req.session.destroy(err => {
         if (err) {
             console.error('Logout error:', err);
             return res.status(500).json({ error: 'An error occurred while logging out' });
         }
 
-        // クライアント側のセッションクッキーをクリアする（オプション）
-        res.clearCookie('connect.sid'); // 'connect.sid' はExpressセッションのデフォルトのクッキー名です
+        res.clearCookie('connect.sid'); 
 
-        // ログアウト成功のレスポンスを返す
+        
         res.status(200).json({ message: 'Logout successful' });
     });
 });
