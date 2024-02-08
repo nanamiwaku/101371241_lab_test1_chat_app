@@ -47,9 +47,7 @@
             });
 
             function validateForm() {
-                // Validation logic here
-                // ...
-                return true; // Assume form is valid for demonstration purposes
+                return true; 
             }
 
             function submitForm() {
@@ -65,11 +63,10 @@
                     url: '/auth/signup',
                     contentType: 'application/json',
                     data: JSON.stringify(userData),
-                    dataType: 'json', // Expect JSON response from server
+                    dataType: 'json', 
                     success: function(response) {
                         alert('Signup successful!');
-                        // Optionally redirect to login page or other page
-                        window.location.href = '/login.html'; // Change this URL to your login page
+                        window.location.href = '/'; 
                     },
                     error: function(xhr) {
                         // Display an error message

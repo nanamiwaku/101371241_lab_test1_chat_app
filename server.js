@@ -3,8 +3,10 @@ const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
 const bodyParser = require('body-parser');
-const User = require('./models/User');
+//const User = require('./models/User');
 const authRoutes = require('./routes/auth');
+const path = require('path'); 
+
 
 
 const uri = 'mongodb+srv://nanamiwaku:PkkJdfZQiBTPejEu@cluster0.bzf8vmp.mongodb.net/comp3133_labtest1?retryWrites=true&w=majority';
@@ -40,13 +42,13 @@ io.on('connection', (socket) => {
   });         
 });
 
-const PORT = process.env.PORT || 5064;
+const PORT = process.env.PORT || 8084;
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 }).on('error', (e) => {
   if (e.code === 'EADDRINUSE') {
-    console.log(`port ${PORT} is alredy used. use other port.`);
+    console.log(`Port ${PORT} it's already used. use other port `);
   } else {
-    console.log(`server got error: ${e.message}`);
+    console.log(`server error: ${e.message}`);
   }
 });
