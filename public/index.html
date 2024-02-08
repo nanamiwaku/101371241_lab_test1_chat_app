@@ -37,7 +37,6 @@
     <div id="chat-interface" style="display:none;">
         <h2>Chatroom: <span id="current-chatroom"></span></h2>
         <div id="chat-messages">
-            <!-- チャットメッセージがここに表示されます -->
         </div>
         <input type="text" id="chat-input" placeholder="Type a message...">
         <button id="send-message">Send</button>
@@ -49,58 +48,59 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
 <script>
     $(document).ready(function() {
-        $('#login-form').submit(function(event) {
-            event.preventDefault(); 
-    
-            var userData = {
-                username: $('#username').val(),
-                password: $('#password').val()
-            };
-    
-            $.ajax({
-                type: 'POST',
-                url: '/auth/login',
-                contentType: 'application/json',
-                data: JSON.stringify(userData),
-                success: function(response) {
-                    localStorage.setItem('userSession', JSON.stringify(response));
-                    
-                    $('#chatrooms-section').show();
-                    
-                    fetchChatrooms();
-                },
-                error: function(xhr) {
-                    alert('Login failed. Please check your username and password.');
-                }
-            });
-        });
-    
-        function fetchChatrooms() {
-            $.ajax({
-                type: 'GET',
-                url: '/api/chatrooms',
-                success: function(chatrooms) {
-                    var chatroomList = $('#chatroom-list');
-                    chatroomList.empty(); 
-    
-                    chatrooms.forEach(function(chatroom) {
-                        var listItem = $('<li>').text(chatroom.name);
-                        listItem.appendTo(chatroomList);
-                    });
-    
-                    $('#chatrooms-section').show();
-                },
-                error: function() {
-                    alert('Failed to load chatrooms.');
-                }
-            });
+$('#login-form').submit(function(event) {
+    event.preventDefault(); 
+
+    var userData = {
+        username: $('#username').val(),
+        password: $('#password').val()
+    };
+
+    $.ajax({
+        type: 'POST',
+        url: '/auth/login',
+        contentType: 'application/json',
+        data: JSON.stringify(userData),
+        success: function(response) {
+            localStorage.setItem('userSession', JSON.stringify(response));
+            window.location.href = '/chatrooms.html';
+        },
+        error: function(xhr) {
+            
+            alert('Login failed. Please check your username and password.');
         }
-    
-        $('#logout').click(function() {
-            localStorage.removeItem('userSession'); セッションを削除
-            location.reload(); 
-        });
     });
+});
+
+
+    function fetchChatrooms() {
+        $.ajax({
+            type: 'GET',
+            url: '/api/chatrooms.html',
+            success: function(chatrooms) {
+                var chatroomList = $('#chatroom-list');
+                chatroomList.empty();
+
+                
+                chatrooms.forEach(function(chatroom) {
+                    var listItem = $('<li>').text(chatroom.name);
+                    listItem.appendTo(chatroomList);
+                });
+
+                $('#chatrooms-section').show();
+            },
+            error: function() {
+                alert('Failed to load chatrooms.');
+            }
+        });
+    }
+
+    $('#logout').click(function() {
+        localStorage.removeItem('userSession');
+        location.reload();
+    });
+});
+
     </script>    
 </body>
 </html>
