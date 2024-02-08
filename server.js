@@ -5,14 +5,12 @@ const socketIo = require('socket.io');
 const bodyParser = require('body-parser');
 const User = require('./models/User');
 const authRoutes = require('./routes/auth');
-const path = require('path'); // pathモジュールのインポート
 
 
-// MongoDB URI - 秘密の情報は.envファイルに移動させるべきですが、一旦ここに記述します。
 const uri = 'mongodb+srv://nanamiwaku:PkkJdfZQiBTPejEu@cluster0.bzf8vmp.mongodb.net/comp3133_labtest1?retryWrites=true&w=majority';
 
 mongoose.connect(uri)
-  .then(() => console.log('Conected to MongoDBに接続しました'))
+  .then(() => console.log('Conected to MongoDB'))
   .catch(err => console.error('Failed to conected MongoDB', err));
 
 const app = express();
@@ -22,7 +20,6 @@ const io = socketIo(server);
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-// auth.jsからのルートを使用する
 app.use('/auth', authRoutes);
 
 app.get('/', (req, res) => {
@@ -43,13 +40,13 @@ io.on('connection', (socket) => {
   });         
 });
 
-const PORT = process.env.PORT || 5054;
+const PORT = process.env.PORT || 5064;
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 }).on('error', (e) => {
   if (e.code === 'EADDRINUSE') {
-    console.log(`ポート ${PORT} は既に使用されています。別のポートを使用するか、そのポートを使用しているプロセスを終了してください。`);
+    console.log(`port ${PORT} is alredy used. use other port.`);
   } else {
-    console.log(`サーバー起動時にエラーが発生しました: ${e.message}`);
+    console.log(`server got error: ${e.message}`);
   }
 });
